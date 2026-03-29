@@ -3,9 +3,7 @@ kind: Namespace
 metadata:
   name: clahanstore
 ---
-# =============================================
-# FRONTEND DEPLOYMENTS (Standard Deployments)
-# =============================================
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,11 +11,6 @@ metadata:
   namespace: clahanstore
 spec:
   replicas: 2
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
   selector:
     matchLabels:
       app: api-gateway
@@ -41,85 +34,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-ui
-  namespace: clahanstore
-spec:
-  replicas: 2
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-  selector:
-    matchLabels:
-      app: frontend-ui
-  template:
-    metadata:
-      labels:
-        app: frontend-ui
-    spec:
-      containers:
-      - name: frontend-ui
-        image: team4devops/ecommerce-frontend-ui:v1.0.0
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: 10m
-            memory: 32Mi
-          limits:
-            cpu: 250m
-            memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 10
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
----
-# =============================================
-# BACKEND STATEFULSETS (Headless Services)
-# =============================================
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
   name: user-service
   namespace: clahanstore
 spec:
-  serviceName: user-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: user-service
@@ -148,33 +70,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3001
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3001
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: auth-service
   namespace: clahanstore
 spec:
-  serviceName: auth-service
   replicas: 2
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: auth-service
@@ -208,33 +111,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3002
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3002
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: product-service
   namespace: clahanstore
 spec:
-  serviceName: product-service
   replicas: 2
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: product-service
@@ -263,33 +147,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3003
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3003
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: search-service
   namespace: clahanstore
 spec:
-  serviceName: search-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: search-service
@@ -323,33 +188,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3004
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3004
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: inventory-service
   namespace: clahanstore
 spec:
-  serviceName: inventory-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: inventory-service
@@ -378,33 +224,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3005
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3005
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: cart-service
   namespace: clahanstore
 spec:
-  serviceName: cart-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: cart-service
@@ -443,33 +270,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3006
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3006
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: wishlist-service
   namespace: clahanstore
 spec:
-  serviceName: wishlist-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: wishlist-service
@@ -503,33 +311,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3007
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3007
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: order-service
   namespace: clahanstore
 spec:
-  serviceName: order-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: order-service
@@ -558,33 +347,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3008
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3008
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: payment-service
   namespace: clahanstore
 spec:
-  serviceName: payment-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: payment-service
@@ -618,33 +388,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3009
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3009
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: invoice-service
   namespace: clahanstore
 spec:
-  serviceName: invoice-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: invoice-service
@@ -683,33 +434,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3010
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3010
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: shipping-service
   namespace: clahanstore
 spec:
-  serviceName: shipping-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: shipping-service
@@ -743,33 +475,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3011
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3011
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: review-rating-service
   namespace: clahanstore
 spec:
-  serviceName: review-rating-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: review-rating-service
@@ -803,33 +516,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3012
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3012
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: recommendation-service
   namespace: clahanstore
 spec:
-  serviceName: recommendation-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: recommendation-service
@@ -873,33 +567,14 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3013
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3013
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: admin-service
   namespace: clahanstore
 spec:
-  serviceName: admin-service
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: admin-service
@@ -953,19 +628,33 @@ spec:
           limits:
             cpu: 250m
             memory: 256Mi
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3014
-          initialDelaySeconds: 15
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3014
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-ui
+  namespace: clahanstore
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-ui
+  template:
+    metadata:
+      labels:
+        app: frontend-ui
+    spec:
+      containers:
+      - name: frontend-ui
+        image: team4devops/ecommerce-frontend-ui:v1.0.0
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+
+
